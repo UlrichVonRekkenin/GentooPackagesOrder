@@ -14,7 +14,10 @@ def sort(filename):
 
     with open(filename, 'r') as f:
         for line in [x.split(' ', 1) for x in f.readlines() if x != '\n' and not x.startswith('#')]:
-            d[line[0]] = str.join(' ', sorted(line[1][:-1].split(' ')))
+            uses = line[1][:-1].split(' ')
+            uses.sort(key = lambda s: s.startswith('-'))
+            d[line[0]] = str.join(' ', uses)
+
 
     with open(filename, 'w') as f:
         od = OD(sorted(d.items()))
