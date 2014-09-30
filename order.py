@@ -6,8 +6,8 @@
 #
 
 import sys
-from time import gmtime, strftime
-import collections
+from time import strftime
+from collections import OrderedDict as OD
 
 def sort(filename):
     d = dict()
@@ -16,9 +16,8 @@ def sort(filename):
         for line in [x.split(' ', 1) for x in f.readlines() if x != '\n' and not x.startswith('#')]:
             d[line[0]] = str.join(' ', sorted(line[1][:-1].split(' ')))
 
-
     with open(filename, 'w') as f:
-        od = collections.OrderedDict(sorted(d.items()))
+        od = OD(sorted(d.items()))
         print('## Last modified at {}\n## by {} script\n\n\n'.format(
                     strftime("%d %m %Y, %H:%M:%S"),
                     sys.argv[0]),
