@@ -7,7 +7,8 @@
 
 import sys
 from time import strftime
-from collections import OrderedDict as OD
+from shutil import copyfile
+
 
 def sort(filename):
     d = dict()
@@ -17,16 +18,17 @@ def sort(filename):
             uses = line[1][:-1].split(' ')
             uses.sort(key = lambda s: s.startswith('-'))
             d[line[0]] = str.join(' ', uses)
+            
+            copyfile(filename, '{}.bak'.format(filename))
 
 
     with open(filename, 'w') as f:
-        od = OD(sorted(d.items()))
         print('## Last modified at {}\n## by {} script\n\n\n'.format(
                     strftime("%d %m %Y, %H:%M:%S"),
                     sys.argv[0]),
                     str.join('\n',
                             (
-                                str.format('{} {}', *kv) for i, kv in enumerate(od.items(), start = 1) if True
+                                str.format('{} {}', *kv) for i, kv in enumerate(sorted(d.items()), start=1) if True
                             )
                         ),
             file = f)
