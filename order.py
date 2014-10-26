@@ -24,12 +24,15 @@ def sort(filename):
 
     with open(filename, 'w') as f:
         f.write('## Last modified at {}\n\n{}'.format(
+
             strftime("%d %m %Y, %H:%M:%S"),
+
             '\n'.join(
                 (
-                    ('{} {}'.format(k, v)) for k, v in sorted(d.items())
+                    ('{} {}'.format(*kv)) for kv in sorted(d.items())
                 )
             )
+
         ))
 
 if __name__ == '__main__':
