@@ -23,15 +23,14 @@ def sort(filename):
 
 
     with open(filename, 'w') as f:
-        print('## Last modified at {}\n## by {} script\n\n\n'.format(
-                    strftime("%d %m %Y, %H:%M:%S"),
-                    sys.argv[0]),
-                    str.join('\n',
-                            (
-                                str.format('{} {}', *kv) for i, kv in enumerate(sorted(d.items()), start=1) if True
-                            )
-                        ),
-            file = f)
+        f.write('## Last modified at {}\n\n{}'.format(
+            strftime("%d %m %Y, %H:%M:%S"),
+            '\n'.join(
+                (
+                    ('{} {}'.format(k, v)) for k, v in sorted(d.items())
+                )
+            )
+        ))
 
 if __name__ == '__main__':
     sort(sys.argv[1])
