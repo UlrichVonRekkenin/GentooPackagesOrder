@@ -1,7 +1,7 @@
 if [ $UID -eq 0 ]
 then
 
-    puc function(){
+    function puc(){
         FILE=/etc/portage/package.use/custom
         echo $1 >> $FILE
         echo "Adding" $1 "to the end of '$FILE'"
