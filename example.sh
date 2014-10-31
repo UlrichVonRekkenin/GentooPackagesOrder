@@ -1,13 +1,9 @@
 if [ $UID -eq 0 ]
 then
 
-    function puc(){
-        FILE=/etc/portage/package.use/custom
-        echo $1 >> $FILE
-        echo "Adding" $1 "to the end of '$FILE'"
-
-        python 'order.py' $FILE
-        echo "Reordering the" $FILE
+    # add to the /etc/portage/package.use/custom
+    function pua(){
+        python3 order.py /etc/portage/package.use/custom "pkg use1 use2 etc"
     }
 
 fi
