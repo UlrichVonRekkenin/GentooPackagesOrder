@@ -23,22 +23,25 @@ def _copy(orig, target):
 
 
 def _unique(orig):
-    output = []
+    output, dups = [], []
 
     for item in orig:
         if item not in output:
             output.append(item)
-    return output
+        else:
+            dups.append(item)
+
+    return output, dups
 
 
 def sort(argv):
 
     filename = argv[0]
-    new_pkg, new_use = argv[1].split(maxsplit=1)[0], argv[1].split(maxsplit=1)[1]
-
-    print('Work with "{}"\npkg "{}"\nuses "{}"'.format(filename, new_pkg, new_use))
+    new_pkg, new_use = argv[1].split(maxsplit=1)
+    print('Work with "{}" and "{}"'.format(new_pkg, new_use))
 
     d = dict()
+
     current_time = lambda fmt: strftime(fmt)
     path2bakcup = lambda arg, fmt: pathlib.Path().joinpath(
         pathlib.PurePath(arg).parent, '.' + pathlib.PurePath(arg).name + current_time(fmt)
@@ -51,13 +54,22 @@ def sort(argv):
 
         for pkg, uses in [x.split(' ', 1) for x in f.readlines() if x != '\n' and not x.startswith('#')]:
 
-
-            d[pkg] = uses[:-1]
+            uses = uses.strip()
 
             if new_pkg == pkg:
-                d[new_pkg] = ' '.join(_unique('{} {}'.format(d[new_pkg], new_use).split()))
+                print('Add to the existing "{}": {} {}'.format(pkg, uses, new_use))
+                uses2add = uses + ' ' + new_use.strip()
             else:
-                d[new_pkg] = new_use
+                uses2add = uses
+
+            list_uniq, list_dups = _unique(uses2add.split())
+
+            if len(list_dups):
+                print('There are the duplications "{}" in the "{}"'.format(' '.join(list_dups), pkg))
+
+            uses2add = ' '.join(list_uniq)
+
+            d[pkg] = uses2add
 
 
         for pkg, uses in d.items():
@@ -70,6 +82,7 @@ def sort(argv):
                     includes.append(use)
 
             d[pkg] = '{} {}'.format(' '.join(sorted(includes)), ' '.join(sorted(excludes)))
+
 
 
     with pathlib.Path(filename).open('w') as f:
@@ -90,5 +103,6 @@ if __name__ == '__main__':
 
     if len(sys.argv) > 1 and len(sys.argv[2]):
         sort(sys.argv[1:])
+
     else:
         print('Usage:\npython3 order.py /etc/portage/package.use/custom "pkg use1 use2 etc"')
